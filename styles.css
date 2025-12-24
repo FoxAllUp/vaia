@@ -1,0 +1,38 @@
+body {
+    background-image: url('background.webp');
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: orange;
+}
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+header {
+    background: #2a1000;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    text-align: center;
+    border-bottom: #ff6200 3px solid;
+}
+footer {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+#chatBox {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 400px;
+    overflow-y: scroll;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+}
