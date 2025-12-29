@@ -29,12 +29,16 @@ function decideState(number){
 
 function generateResponse(state) {
     let response = "";
+    const rand = Math.random();
     switch(state) {
         case "kimért bölcs":
-            response = "Gondolkodj…";
+            if(rand < 0.5){
+                response = rand < 0.25 ? "Hmmm…" : "Hááát…";
+            } else {
+                response = "";
+            }
             break;
         case "kiegyensúlyozott":
-            const rand = Math.random();
             let szerep = "";
             if(rand < 0.6) {
                 szerep = "kérdező";
@@ -56,14 +60,10 @@ function generateResponse(state) {
             break;
     }
     return response;
-  }
-function countECharacters(input) {
-    return (input.match(/e/gi) || []).length;
 }
 
   function sendMessage() {
     const userInput = document.getElementById("userInput").value;
-//    const eCount = countECharacters(userInput);
     const currentEnergy = calculateEnergy(userInput);
     const state = decideState(currentEnergy);
     const vaiaResponse = generateResponse(state);
@@ -73,3 +73,10 @@ function countECharacters(input) {
     document.getElementById("userInput").value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
   }
+
+  document.getElementById("userInput").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("sendBtn").click();
+    }
+  });
