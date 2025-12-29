@@ -1,5 +1,5 @@
 body {
-    background-image: url('background.webp');
+    background-image: url('ruins.webp');
     background-size: cover;
     padding: 0;
     margin: 0;
@@ -12,12 +12,13 @@ body {
     overflow: hidden;
 }
 header {
-    background: #2a1000;
+    background: linear-gradient(to bottom, #3c2300, #943900, #261600);
     color: #fff;
-    padding-top: 30px;
+    padding-top: 10px;
+    margin-bottom: 2%;
     min-height: 70px;
     text-align: center;
-    border-bottom: #ff6200 3px solid;
+    border-bottom: #1d0a00 3px solid;
 }
 footer {
     background-color: black;
@@ -33,6 +34,12 @@ footer {
     padding: 10px;
     height: 400px;
     overflow-y: scroll;
-    background-color: #f9f9f9;
+    background-color: rgba(249, 249, 249, 0.75);
     margin-bottom: 10px;
 }
+
+#chatBox strong {
+    color: #ff5900;
+    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
