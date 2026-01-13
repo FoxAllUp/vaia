@@ -1,5 +1,5 @@
 /*VAIA - Vulpes Artificial Intelligent Agent*/
-// Version: 1.0.0
+// Version: 1.0.1 (modified for in-browser fake LLM)
 
 let talkLevel = 0;
 let empathyMode = false;
@@ -154,28 +154,53 @@ function generateResponse(state) {
     return response;
 }
 
-function sendMessage() {
-    const userInput = document.getElementById("userInput").value;
+// Helper to escape HTML
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function (m) {
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  });
+}
+
+// Replaced sendMessage to call in-browser fake LLM (window.VAIA_API)
+async function sendMessage() {
+    const userInputEl = document.getElementById("userInput");
+    const chatBox = document.getElementById("chatBox");
+    const userInput = userInputEl.value.trim();
+    if (!userInput) return;
+
+    // local bookkeeping
     const currentEnergy = calculateEnergy(userInput);
     const state = decideState(currentEnergy);
-    const vaiaResponse = generateResponse(state);
-    const chatBox = document.getElementById("chatBox");
-
     updateMemory(currentEnergy, userInput.length);
     updateEmpathyState(userInput);
-
     if (userInput.length > 40) talkLevel += 2;
     else if (userInput.length < 10) talkLevel -= 1;
-    
     if (talkLevel < -5) talkLevel = -5;
-    if (talkLevel > 5) talkLevel = 5;    
+    if (talkLevel > 5) talkLevel = 5;
 
-    chatBox.innerHTML += `<p><strong>Te:</strong> ${userInput}</p>`;
+    // Show user's message immediately
+    chatBox.innerHTML += `<p><strong>Te:</strong> ${escapeHtml(userInput)}</p>`;
+    userInputEl.value = "";
 
-    if(vaiaResponse !== ""){
-        chatBox.innerHTML += `<p><strong>VAIA:</strong> ${vaiaResponse}</p>`;
+    // Typing indicator to mimic remote model
+    const typingId = `typing-${Date.now()}`;
+    chatBox.innerHTML += `<p id="${typingId}"><strong>VAIA:</strong> <em>gondolkodik…</em></p>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+        const vaiaResponse = window.VAIA_API && window.VAIA_API.generate ? await window.VAIA_API.generate(userInput) : generateResponse(state);
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+        if (vaiaResponse && vaiaResponse.trim() !== "") {
+            // show response with slight typing animation (append then reveal)
+            chatBox.innerHTML += `<p><strong>VAIA:</strong> ${escapeHtml(vaiaResponse)}</p>`;
+        }
+    } catch (err) {
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+        chatBox.innerHTML += `<p><strong>VAIA:</strong> (hiba a válasz létrehozásakor)</p>`;
+        console.error(err);
     }
-    document.getElementById("userInput").value = "";
 
     chatBox.scrollTop = chatBox.scrollHeight;
 }
